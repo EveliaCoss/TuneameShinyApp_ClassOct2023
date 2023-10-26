@@ -32,6 +32,16 @@ remotes::install_github("mitchelloharawild/icons")
 
 2) Descarga el archivo Shiny_EveliaCoss_clase.Rmd
 
+## Shiny final de esta clase 💻
+
+En este curso terminaremos con estos dos ejemplos de Shiny App generados con el paquete  `fresh`:
+
+![shinyDefault](./figures/shiny-default.png)
+
+![shinyCute](./figures/shiny-custom.png)
+
+[Github de fresh](https://github.com/dreamRs/fresh)
+
 ## Ejemplos:
 
 Visitar la pagina web de [Bootswatch](https://bootswatch.com/cyborg/) y [shiny](https://shiny.posit.co/r/articles/build/notifications/).
