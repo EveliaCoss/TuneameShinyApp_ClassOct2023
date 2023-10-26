@@ -1,0 +1,1065 @@
+---
+title: "Tunéame la Shiny App"
+author: "Evelia Coss"
+date: "2023-10-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Paquetes 📚 
+
+```{r Instalacion de paquetes}
+install.packages("bslib")   # Crea tus propios temas
+install.packages("bsicons") # Temas decorativos para shiny app
+install.packages("fresh")   # Temas decorativos para shiny ap
+install.packages("plotly")  # Graficas interactivas
+install.packages("RColorBrewer") # paletas de colores
+install.packages("paletteer")    # paletas de colores
+install.packages("gapminder")    # base de datos gapminder
+install.packages("pacman")  # Instalacion y cargar paquetes multiples
+install.packages("shinythemes") # Temas determinados para shiny
+install.packages("shinyWidgets") # shiny opciones
+install.packages("DT")    # Tablas bonitas
+#install.packages("gt")    # Tablas bonitas
+
+# Emojis e iconos
+install.packages("fontawesome")
+devtools::install_github("hadley/emo")
+remotes::install_github("mitchelloharawild/icons")
+```
+
+
+```{r cargar paquetes}
+library(shiny)
+library(bslib)        # Crea tus propios temas para shiny app, Manual https://github.com/rstudio/bslib/
+library(fresh)        # Temas decorativos
+library(ggplot2)      # visualizacion grafica
+library(plotly)       # Graficas interactivas
+library(dplyr)        # Manipulacion de datos
+library(RColorBrewer) # paletas de colores 
+library(paletteer)    # paletas de colores, manual https://github.com/EmilHvitfeldt/paletteer
+library(gapminder)    # base de datos gapminder
+library(shinythemes)  # Temas determinados para shiny, manual https://rstudio.github.io/shinythemes/
+library(shinyWidgets) # shiny opciones
+library(DT)           # Tablas bonitas
+# library(gt)           # Tablas bonitas, manual https://gt.rstudio.com/
+
+# Emojis e iconos
+library(icons)       # manual https://github.com/mitchelloharawild/icons
+library(fontawesome) # manual https://github.com/rstudio/fontawesome
+library(emo)         # manual https://github.com/hadley/emo
+# Pagina web de emoji Github, https://gist.github.com/rxaviers/7360908
+```
+
+
+```{r Multiples paquetes instalandose}
+# Paquete de instalacion de otros paquetes
+library(pacman)
+p_load("paletteer", "RColorBrewer") # los instala de ser necesario y los carga en el ambiente
+```
+
+
+## Paletas de colores  💜💙💚
+
+### 1) Colores preestablecidos en R
+
+Puedes observar todas las gamas de [colores base](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf). 
+
+```{r}
+colors()
+```
+
+Crear una paleta de colores manualmente
+
+```{r}
+Paleta <- c("cadetblue","coral","mediumspringgreen")
+```
+
+visualización grafica 📈
+
+```{r Grafica - colores base}
+ggplot(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+  geom_point() +
+  scale_color_manual(values = Paleta)
+```
+
+
+### 2) Paletas de colores proveniente de paquetes
+
+Puedes usar diferentes paletas de colores en tus graficas como las que se encuentran en los paquetes `RColorBrewer` y `paletteer`. 
+
+```{r Paletas de colores, eval=FALSE}
+display.brewer.all() # ejecutar en la consola para que se despliegue en Plots
+display.brewer.all(colorblindFriendly = TRUE)  # Paleta de colores para personas con Daltonismo
+```
+
+
+```{r Grafica - Paleta RColorBrewer}
+ggplot(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+  geom_point() +
+  scale_color_brewer(palette = "Dark2")
+```
+
+
+```{r Grafica -Paleta Paletter}
+ggplot(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+  geom_point() +
+  scale_color_paletteer_d("nord::aurora")
+```
+
+### 3) Paletas de colores valores HEX o RGB
+
+- [colorbrewer2](https://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3)
+- [Data Color Picker](https://www.learnui.design/tools/data-color-picker.html#palette)
+- [htmlcolors](https://htmlcolorcodes.com/es/)
+
+### 4) Otros ejemplos
+
+- [Cookbook for R - colours](http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/)
+- [ggplot2 Reference and examples - colours](https://rstudio-pubs-static.s3.amazonaws.com/5312_98fc1aba2d5740dd849a5ab797cc2c8d.html)
+
+## Temas en ggplot (themes) 📊
+
+Los temas son una forma de personalizar los componentes que no son datos de sus gráficos: títulos, etiquetas, fuentes, fondo, cuadrículas y leyendas. 
+
+Los temas pueden ser utilizados para dar al grafico un aspecto personalizado. 
+
+Para ver los temas: https://ggplot2.tidyverse.org/reference/ggtheme.html
+
+```{r}
+base <- ggplot(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+  geom_point() +
+  scale_color_paletteer_d("nord::aurora")
+```
+
+Vamos a ver varios temas
+
+```{r}
+base + theme_gray()
+base + theme_light()
+base + theme_dark()
+base + theme_minimal()
+base + theme_void()
+base + theme_test()
+base + theme_classic()
+base + theme_bw()
+```
+
+## Graficas interacticas con `plotly`
+
+Existen galerías en donde nos permiten ver las figuras y tomar el código de ejemplo, para posteriormente reproducirlo en nuestros datos.
+
+- [Galerias de plotly](https://plotly.com/ggplot2/)
+- [The R Graph Gallery](https://r-graph-gallery.com)
+
+El dataset `starwars` se encuentra presente en el paquete `dplyr`.
+
+```{r}
+head(starwars, 5)
+```
+### Tabla bonita en Shiny 📅
+
+```{r Shiny tabla bonita}
+bs4_card <- function(body, title) {
+  div(
+    class = "card",
+    div(class = "card-header bg-primary", title),
+    div(class = "card-body d-flex justify-content-center", body)
+  )
+}
+
+
+shinyApp(
+  fluidPage(
+    theme = bslib::bs_theme(primary = "orange"),
+    uiOutput("dat")
+  ),
+  function(input, output) {
+    output$dat <- renderUI({
+      table <- DT::datatable(mtcars, fillContainer = TRUE, style = "bootstrap4", rownames = FALSE)
+      bs4_card(table, "The mtcars dataset")
+    })
+  }
+)
+
+# Paquete bslib
+# Codigo de https://rstudio.github.io/bslib/articles/utility-classes/
+```
+
+
+
+### Grafica interactiva basica 📊
+
+Grafica interactiva del peso y masa de los personajes de Starwars por genero. 
+
+```{r Grafica Interactiva - basica}
+p <- ggplot(starwars, aes(height, mass, colour = sex)) +
+  geom_point(pch = 3) + theme_bw()
+
+# Grafica interactiva
+ggplotly(p)
+```
+
+### Animaciones con el rango de tiempo
+
+```{r Grafica Interactiva - Tiempo}
+# Grafica base
+base <- ggplot(gapminder, aes(gdpPercap, lifeExp, color = continent))
+
+# Agregar barra de tiempo editable
+base_gg1 <- base +
+  geom_point(aes(size = pop, frame = year, ids = country)) +
+  scale_x_log10()
+
+base_gg1
+
+# Grafica interactiva
+ggplotly(base_gg1)
+```
+
+### Animaciones con boton de tiempo 👾
+
+```{r Grafica Interactiva - boton Tiempo}
+# Almacenar el plotly
+fig <- ggplotly(base_gg1)
+
+# Agregar animacion y boton
+fig <- fig %>% 
+  # Configurar animacion
+  animation_opts(
+    frame = 1000, # duracion en milisegundos
+    easing = "elastic", # tipo de transicion
+    redraw = FALSE # No realizar un redibujo del grafico al terminar la transicion
+  )
+
+fig <- fig %>% 
+  # Configurar el boton de la animacion
+  animation_button(
+    x = 1, 
+    xanchor = "right", #posicion en x
+    y = 0, 
+    yanchor = "bottom" #posicion en y
+  )
+
+fig
+
+# animation_opts = https://www.rdocumentation.org/packages/plotly/versions/4.10.2/topics/animation_opts
+```
+
+## Temas decorativos
+
+## Paquete `shinythemes`
+
+### Emplea tema de `shinythemes`
+
+Podemos seleccionar uno de los temas de [shinytheme](https://rstudio.github.io/shinythemes/).
+
+```{r Ejemplo Basico}
+# Define UI
+ui <- fluidPage(
+    theme = shinytheme("cerulean"), # Tema seleccionado
+    headerPanel("Iris k-means clustering"), #titulo del panel
+    # Sidebar with a slider input
+    sidebarLayout(
+        sidebarPanel(
+          # valor en X
+            selectInput(
+                inputId = "xcol",
+                label = "X Variable",
+                choices = names(iris), # Opciones = nombre en columnas
+                selected = names(iris)[[3]] # Opcion default, "Petal.Length"
+            ),  # end selectInput 1
+            # valor en Y
+            selectInput(
+                inputId = "ycol",
+                label = "Y Variable",
+                choices = names(iris), # Opciones = nombre en columnas
+                selected = names(iris)[[2]] # Opcion default, "Sepal.Width" 
+            ), # end selectInput 2
+            # Numero de Clusters
+            numericInput(
+                inputId = "clusters",
+                label = "Cluster count",
+                value = 3, # Opcion default, 3 clusters
+                min = 1,
+                max = 9
+            ) # end numericInput
+        ), # end sidebarPanel
+        # Show a plot of the generated distribution
+        mainPanel(
+            plotOutput("plot1")
+        ) # end mainPanel
+    ) #end sidebarLayout
+) # end fluidPage
+
+# Server logic
+server <- function(input, output, session) {
+  # Declarar variables reactivas
+  # Data, default x = Petal.Length, y = Sepal.Width
+    selectedData <- reactive({
+        iris[, c(input$xcol, input$ycol)]
+    })
+  # Clusters generados con kmeans, 3 default
+    clusters <- reactive({
+        kmeans(selectedData(), input$clusters)
+    })
+    # Grafica de salida
+    output$plot1 <- renderPlot({
+        palette(c( # Color de los clusters, podemos tener de 1:9
+            "#E41A1C", "#377EB8", "#4DAF4A", "#984EA3",
+            "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999"
+        ))
+        
+        par(mar = c(5.1, 4.1, 0, 1)) # dimensiones mar = c(bottom, left, top, right) 
+        plot(selectedData(), # Data, default x = Petal.Length, y = Sepal.Width
+            col = clusters()$cluster, # numero de clusters
+            pch = 20, cex = 3 # Tipos de puntos y expasion.
+        )
+        # Agregar una x para indicar cada cluster
+        points(clusters()$centers, pch = 4, cex = 4, lwd = 4) 
+        #pch = tipo, csx = expansion, lwd = line widths
+    })
+}
+
+# Generar Shiny App
+shinyApp(ui = ui, server = server)
+
+```
+
+
+Tambien podemos usar el **Live theme selector** para ver como el tema modifica nuestra ShinyApp.
+
+```{r Live theme selector}
+# Define UI
+ui <- fluidPage(
+    shinythemes::themeSelector(),  # <--- Emplear el previsualizador
+    headerPanel("Iris k-means clustering"), #titulo del panel
+    # Sidebar with a slider input
+    sidebarLayout(
+        sidebarPanel(
+          # valor en X
+            selectInput(
+                inputId = "xcol",
+                label = "X Variable",
+                choices = names(iris), # Opciones = nombre en columnas
+                selected = names(iris)[[3]] # Opcion default, "Petal.Length"
+            ),  # end selectInput 1
+            # valor en Y
+            selectInput(
+                inputId = "ycol",
+                label = "Y Variable",
+                choices = names(iris), # Opciones = nombre en columnas
+                selected = names(iris)[[2]] # Opcion default, "Sepal.Width" 
+            ), # end selectInput 2
+            # Numero de Clusters
+            numericInput(
+                inputId = "clusters",
+                label = "Cluster count",
+                value = 3, # Opcion default, 3 clusters
+                min = 1,
+                max = 9
+            ) # end numericInput
+        ), # end sidebarPanel
+        # Show a plot of the generated distribution
+        mainPanel(
+            plotOutput("plot1")
+        ) # end mainPanel
+    ) #end sidebarLayout
+) # end fluidPage
+
+# Generar Shiny App
+shinyApp(ui = ui, server = server)
+
+```
+
+
+## Paquete `bslib`
+
+### Crea tu propio tema decorativo con `bslib`
+
+```{r bslib - usar temas}
+# Define UI
+ui <- fluidPage(
+    theme = bs_theme(version = 4, bootswatch = "minty"), # usar un tema
+    headerPanel("Iris k-means clustering"), #titulo del panel
+    # Sidebar with a slider input
+    sidebarLayout(
+        sidebarPanel(
+          # valor en X
+            selectInput(
+                inputId = "xcol",
+                label = "X Variable",
+                choices = names(iris), # Opciones = nombre en columnas
+                selected = names(iris)[[3]] # Opcion default, "Petal.Length"
+            ),  # end selectInput 1
+            # valor en Y
+            selectInput(
+                inputId = "ycol",
+                label = "Y Variable",
+                choices = names(iris), # Opciones = nombre en columnas
+                selected = names(iris)[[2]] # Opcion default, "Sepal.Width" 
+            ), # end selectInput 2
+            # Numero de Clusters
+            numericInput(
+                inputId = "clusters",
+                label = "Cluster count",
+                value = 3, # Opcion default, 3 clusters
+                min = 1,
+                max = 9
+            ) # end numericInput
+        ), # end sidebarPanel
+        # Show a plot of the generated distribution
+        mainPanel(
+            plotOutput("plot1")
+        ) # end mainPanel
+    ) #end sidebarLayout
+) # end fluidPage
+
+# Server logic
+server <- function(input, output, session) {
+  # Declarar variables reactivas
+  # Data, default x = Petal.Length, y = Sepal.Width
+    selectedData <- reactive({
+        iris[, c(input$xcol, input$ycol)]
+    })
+  # Clusters generados con kmeans, 3 default
+    clusters <- reactive({
+        kmeans(selectedData(), input$clusters)
+    })
+    # Grafica de salida
+    output$plot1 <- renderPlot({
+        palette(c( # Color de los clusters, podemos tener de 1:9
+            "#E41A1C", "#377EB8", "#4DAF4A", "#984EA3",
+            "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999"
+        ))
+        
+        par(mar = c(5.1, 4.1, 0, 1)) # dimensiones mar = c(bottom, left, top, right) 
+        plot(selectedData(), # Data, default x = Petal.Length, y = Sepal.Width
+            col = clusters()$cluster, # numero de clusters
+            pch = 20, cex = 3 # Tipos de puntos y expasion.
+        )
+        # Agregar una x para indicar cada cluster
+        points(clusters()$centers, pch = 4, cex = 4, lwd = 4) 
+        #pch = tipo, csx = expansion, lwd = line widths
+    })
+    bs_themer() # <-----Agregar el visualizador de temas
+}
+
+# Correr la shiny app con editor de temas
+shinyApp(ui = ui, server = server)
+
+# Codigo modificado de https://appsilon.com/r-shiny-bslib/
+```
+
+### Crea tu propio tema decorativo con `bslib`
+
+```{r bslib - custom_theme}
+# Generar un Tema de default (inicial)
+custom_theme <- bs_theme(
+    version = 5,  # version del paquete, 5 es la mas actual
+    bg = "#FFFFFF", #background, fondo
+    fg = "#000000", # foreground
+    primary = "#0199F8", # hyperlinks
+    secondary = "#FF374B", # components and messages, mensajes de error, X/Y = Species
+    base_font = "Grandstander" #tipo de letra  Maven Pro
+)
+
+# bs_theme = Manual https://rstudio.github.io/bslib/reference/bs_theme.html
+
+```
+
+`run_with_themer()` nos permite ver mas temas editables dentro de la shiny app. 
+
+```{r bslib - Visualizar tema}
+# Define UI
+ui <- fluidPage(
+    theme = custom_theme, # Tema creado
+    headerPanel("Iris k-means clustering"), #titulo del panel
+    # Sidebar with a slider input
+    sidebarLayout(
+        sidebarPanel(
+          # valor en X
+            selectInput(
+                inputId = "xcol",
+                label = "X Variable",
+                choices = names(iris), # Opciones = nombre en columnas
+                selected = names(iris)[[3]] # Opcion default, "Petal.Length"
+            ),  # end selectInput 1
+            # valor en Y
+            selectInput(
+                inputId = "ycol",
+                label = "Y Variable",
+                choices = names(iris), # Opciones = nombre en columnas
+                selected = names(iris)[[2]] # Opcion default, "Sepal.Width" 
+            ), # end selectInput 2
+            # Numero de Clusters
+            numericInput(
+                inputId = "clusters",
+                label = "Cluster count",
+                value = 3, # Opcion default, 3 clusters
+                min = 1,
+                max = 9
+            ) # end numericInput
+        ), # end sidebarPanel
+        # Show a plot of the generated distribution
+        mainPanel(
+            plotOutput("plot1")
+        ) # end mainPanel
+    ) #end sidebarLayout
+) # end fluidPage
+
+# Server logic
+server <- function(input, output, session) {
+  # Declarar variables reactivas
+  # Data, default x = Petal.Length, y = Sepal.Width
+    selectedData <- reactive({
+        iris[, c(input$xcol, input$ycol)]
+    })
+  # Clusters generados con kmeans, 3 default
+    clusters <- reactive({
+        kmeans(selectedData(), input$clusters)
+    })
+    # Grafica de salida
+    output$plot1 <- renderPlot({
+        palette(c( # Color de los clusters, podemos tener de 1:9
+            "#E41A1C", "#377EB8", "#4DAF4A", "#984EA3",
+            "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999"
+        ))
+        
+        par(mar = c(5.1, 4.1, 0, 1)) # dimensiones mar = c(bottom, left, top, right) 
+        plot(selectedData(), # Data, default x = Petal.Length, y = Sepal.Width
+            col = clusters()$cluster, # numero de clusters
+            pch = 20, cex = 3 # Tipos de puntos y expasion.
+        )
+        # Agregar una x para indicar cada cluster
+        points(clusters()$centers, pch = 4, cex = 4, lwd = 4) 
+        #pch = tipo, csx = expansion, lwd = line widths
+    })
+}
+
+# Correr la shiny app con editor de temas
+bslib::run_with_themer(shinyApp(ui = ui, server = server)) # run_with_themer = Usar el visualizador de temas
+
+# Codigo modificado de https://appsilon.com/r-shiny-bslib/
+```
+
+### Pre-Visualizar mi tema
+
+Podemos observar los colores del tema que hemos generado empleando `bs_theme_preview()` y visualizar la Información contenida en el ejemplo 
+
+
+```{r bslib - custom_theme}
+bs_theme_preview(custom_theme)
+```
+
+Si creamos otro...
+
+```{r bslib - my_theme}
+my_theme <- bs_theme(
+  bg = "#0b3d91", fg = "white", primary = "#FCC780",
+  base_font = font_google("Space Mono"),
+  code_font = font_google("Space Mono")
+)
+
+
+bs_theme_preview(my_theme)
+
+# Codigo de https://shiny.posit.co/r/articles/build/themes/
+```
+
+
+## Paquete `shinyWidgets`
+
+Esta Información fue obtenida de [app.R](https://github.com/dreamRs/fresh/blob/master/inst/examples/pretty/app.R).
+
+Con el paquete `shinyWidgets` tambien podemos crear temas en CSS.
+
+```{r custom-pretty}
+create_pretty(
+  output_file = "custom-pretty.css",
+  primary = "#1B9E77",
+  success = "#7570B3",
+  info = "#D95F02",
+  danger = "#E7298A"
+)
+```
+
+
+```{r Checkbox}
+ui <- fluidPage(
+  tags$h1("Pretty checkbox"), #titulo
+  br(), #salto de linea
+
+  use_pretty(path = "custom-pretty.css"), # tema por elegir
+
+  fluidRow(
+    column(
+      width = 4, #tamano
+      # Checkbox sencillo
+      prettyCheckbox(inputId = "checkbox1",
+                     label = "Click me, checkbox1!"),
+      verbatimTextOutput(outputId = "res1"), # Texto, default FALSE
+      br(), #salto de linea
+      # Checkbox con icono
+      prettyCheckbox(inputId = "checkbox4",  label = "Click me, checkbox4!",
+                     outline = TRUE, status = "primary", #color
+                     plain = TRUE, icon = icon("thumbs-up")), #icono de manita
+      verbatimTextOutput(outputId = "res4") # Texto, default FALSE
+    ), # end column 1
+    column(
+      width = 4,
+      # Checkbox con cajita de color con animacion
+      prettyCheckbox(inputId = "checkbox2",
+                     label = "Click me, checkbox2!", 
+                     thick = TRUE, animation = "pulse", # colocar animacion al dar click
+                     status = "info"),
+      verbatimTextOutput(outputId = "res2"), # Texto, default FALSE
+      br(), #salto de linea
+      # Checkbox con cajita de color morada con icono y animacion
+      prettyCheckbox(inputId = "checkbox5",
+                     label = "Click me, checkbox5!", 
+                     icon = icon("check"), # icono de palomita
+                     animation = "tada", status = "success"), # colocar animacion al dar click
+      verbatimTextOutput(outputId = "res5") # Texto, default FALSE
+    ), # end column 2
+    column(
+      width = 4,
+       # Checkbox redondo con valor de default
+      prettyCheckbox(inputId = "checkbox3",  label = "Click me, checkbox3!", 
+                     shape = "round", # forma redonda
+                     status = "danger", #color
+                     fill = TRUE, value = TRUE), # Default = TRUE
+      verbatimTextOutput(outputId = "res3") # Texto, default TRUE
+    ) #ened column 3
+  ) # end fluidRow
+
+) # end fluidPage
+
+server <- function(input, output, session) {
+
+  output$res1 <- renderPrint(input$checkbox1)
+  output$res2 <- renderPrint(input$checkbox2)
+  output$res3 <- renderPrint(input$checkbox3)
+  output$res4 <- renderPrint(input$checkbox4)
+  output$res5 <- renderPrint(input$checkbox5)
+
+}
+
+shinyApp(ui, server)
+
+# Codigo modificado de https://github.com/dreamRs/fresh/blob/master/inst/examples/pretty/app.R
+```
+
+
+## Paquete `fresh`
+
+### Emplea temas de `fresh`
+
+Pagina web [fresh](https://dreamrs.github.io/fresh/articles/fresh.html) y [Github de fresh](https://github.com/dreamRs/fresh)
+
+Observar el ejemplo del Github:
+
+```{r}
+shiny::runGitHub("dreamRs/fresh", subdir = "inst/examples/create")
+```
+
+Para crear un tema CSS podemos usar la funcion `create_theme()`. ANTES de correr el siguiente codigo crea un carpeta en tu directorio de trabajo llamada `www`. En esta carpeta almacenaremos el CSS.
+
+#### 1) Crear un tema e importarlo
+
+```{r fresh - crear temas CSS}
+create_theme(
+  theme = "default",
+  # Configuracion de la barra de navegacion
+  bs_vars_navbar(
+    default_bg = "#3f2d54",
+    default_color = "#FFFFFF",
+    default_link_color = "#FFFFFF",
+    default_link_active_color = "#FFFFFF"
+  ),
+  bs_vars_color(
+    gray_base = "#354e5c",
+    brand_primary = "#75b8d1",
+    brand_success = "#c9d175",
+    brand_info = "#758bd1",
+    brand_warning = "#d1ab75",
+    brand_danger = "#d175b8"
+  ),
+  bs_vars_state(
+    success_text = "#FFF",
+    success_bg = "#c9d175",
+    success_border = "#c9d175",
+    info_text = "#FFF",
+    info_bg = "#3f2d54",
+    info_border = "#3f2d54",
+    danger_text = "#FFF",
+    danger_bg = "#d175b8",
+    danger_border = "#d175b8"
+  ),
+  bs_vars_wells(
+    bg = "#FFF",
+    border = "#3f2d54"
+  ),
+  # Almacenarlo
+  output_file = "www/cute.css"
+)
+```
+
+Visualizarlo en la shinyApp
+
+```{r fresh - Visualizacion 1}
+# Define UI
+ui <- navbarPage(
+
+  title = "My application",
+  theme = "cute.css",
+  # theme = "stylesheets/mytheme.css",
+  
+  # Primera hoja / primera pestana
+  tabPanel(
+    
+    title = "First page", # titulo primera hoja
+
+    tags$h1("Custom theme for Shiny apps"), # Titulo central
+    
+   # Panel de opciones
+    sidebarLayout(
+      sidebarPanel(
+        # Opciones tipo radioButtons
+        radioButtons(
+          inputId = "radio",
+          label = "Your choice:",
+          choices = c("shiny", "shinydashboard", "flexdashboard")
+        ), # end mainPanel
+        # Mensaje 
+        tags$div(
+          class = "alert alert-info",
+          icon("info"), "You can customize a lot of elements from Bootstrap"
+        ) #end tags
+      ), #end sidebarPanel
+      
+      # Informacion central
+      mainPanel(
+
+        tags$h3("Buttons"), # subtitulo
+        # Botones de accion
+        actionButton(
+          "primary", "Primary", class = "btn-primary"
+        ),
+        actionButton(
+          "success", "Success", class = "btn-success"
+        ),
+        actionButton(
+          "info", "Info", class = "btn-info"
+        ),
+        actionButton(
+          "warning", "Warning", class = "btn-warning"
+        ),
+        actionButton(
+          "danger", "Danger", class = "btn-danger"
+        ),
+
+        tags$h3("Panel from {shinyWidgets}"), # subtitulo
+        # Paneles internos
+        fluidRow(
+          column(
+            width = 4, # tamano
+            # Panel 1 - Primary
+            panel(
+              heading = "Primary panel",
+              status = "primary"
+            ) #end panel 1
+          ), #end column 1
+          column(
+            width = 4, # tamano
+            # Panel 2 - Success
+            panel(
+              heading = "Success panel",
+              status = "success"
+            )#end panel 2
+          ), # end column 2
+          column(
+            width = 4,# tamano
+            # Panel 3 - Danger
+            panel(
+              heading = "Danger panel",
+              status = "danger"
+            )#end panel 3
+          ) #end column 3
+        ),# end fluidRow 1
+
+        tags$h3("progressBar from {shinyWidgets}"), # subtitulo
+        fluidRow(
+          column(
+            width = 4, # tamano
+            # Barras de progresos
+            # Barra 1
+            progressBar(
+              "pb1", value = 80, status = "primary", display_pct = TRUE
+            ) # end progressBar 1
+          ), # end column 1
+          column(
+            width = 4, # tamano
+            progressBar(
+              "pb2", value = 60, status = "success", display_pct = TRUE
+            ) # end progressBar 2
+          ), # end column 2
+          column(
+            width = 4,  # tamano
+            progressBar(
+              "pb3", value = 40, status = "danger", display_pct = TRUE
+            ) # end progressBar 3
+          ) # end column 3
+        ) # end fluidRow 2
+      ) # end mainPanel
+    ) # end sidebarLayout
+  ), # end tabPanel 1 - primera hoja / primera pestana
+  tabPanel(
+    title = "Second page"
+  ), # end tabPanel 2 - segunda hoja / segunda pestana
+  # Menu desplegable
+  navbarMenu(
+    title = "More",
+    tabPanel("Summary"), # sub pestana 1
+    "----",
+    "Section header",
+    tabPanel("Table") # sub pestana 2
+  ) # end navbarMenu - tercera hoja / tercera pestana
+
+) # end navbarPage
+
+server <- function(input, output, session) {
+
+}
+
+shinyApp(ui, server)
+
+# Contenido modificado de https://github.com/dreamRs/fresh/blob/master/inst/examples/shiny-fluid/app.R
+```
+
+#### 2) Crear un tema y almacenarlo en R
+
+```{r fresh - cute_theme}
+cute_theme <- create_theme(
+  theme = "default",
+  bs_vars_navbar(
+    default_bg = "#3f2d54",
+    default_color = "#FFFFFF",
+    default_link_color = "#FFFFFF",
+    default_link_active_color = "#FFFFFF",
+    default_link_hover_color = "#A4A4A4"
+  ),
+  # Asignar colores de dependiendo del mensaje
+  bs_vars_color(
+    gray_base = "#354e5c",
+    brand_primary = "#75b8d1",
+    brand_success = "#c9d175",
+    brand_info = "#758bd1",
+    brand_warning = "#d1ab75",
+    brand_danger = "#d175b8"
+  ),
+  bs_vars_state(
+    success_text = "#FFF",
+    success_bg = "#c9d175",
+    success_border = "#c9d175",
+    info_text = "#FFF",
+    info_bg = "#3f2d54",
+    info_border = "#3f2d54",
+    danger_text = "#FFF",
+    danger_bg = "#d175b8",
+    danger_border = "#d175b8"
+  ),
+  bs_vars_wells(
+    bg = "#FFF",
+    border = "#3f2d54"
+  )
+  # ,
+  # output_file = "www/mytheme.css",
+  # include_assets = FALSE
+)
+```
+
+Visualizarlo en la shinyApp
+
+Para que pueda usar el tema generado debemos usar `use_theme(cute_theme)` en el codigo.
+
+```{r fresh - Visualizacion 2}
+# Define UI
+ui <- navbarPage(
+
+  title = "My application",
+  # theme = "cute.css",
+  # theme = "stylesheets/mytheme.css",
+
+  header = tagList(
+    use_theme(cute_theme) # tema generado en R
+  ),
+  
+  # Primera hoja / primera pestana
+  tabPanel(
+    
+    title = "First page", # titulo primera hoja
+
+    tags$h1("Custom theme for Shiny apps"), # Titulo central
+    
+   # Panel de opciones
+    sidebarLayout(
+      sidebarPanel(
+        # Opciones tipo radioButtons
+        radioButtons(
+          inputId = "radio",
+          label = "Your choice:",
+          choices = c("shiny", "shinydashboard", "flexdashboard")
+        ), # end mainPanel
+        # Mensaje 
+        tags$div(
+          class = "alert alert-info",
+          icon("info"), "You can customize a lot of elements from Bootstrap"
+        ) #end tags
+      ), #end sidebarPanel
+      
+      # Informacion central
+      mainPanel(
+
+        tags$h3("Buttons"), # subtitulo
+        # Botones de accion
+        actionButton(
+          "primary", "Primary", class = "btn-primary"
+        ),
+        actionButton(
+          "success", "Success", class = "btn-success"
+        ),
+        actionButton(
+          "info", "Info", class = "btn-info"
+        ),
+        actionButton(
+          "warning", "Warning", class = "btn-warning"
+        ),
+        actionButton(
+          "danger", "Danger", class = "btn-danger"
+        ),
+
+        tags$h3("Panel from {shinyWidgets}"), # subtitulo
+        # Paneles internos
+        fluidRow(
+          column(
+            width = 4, # tamano
+            # Panel 1 - Primary
+            panel(
+              heading = "Primary panel",
+              status = "primary"
+            ) #end panel 1
+          ), #end column 1
+          column(
+            width = 4, # tamano
+            # Panel 2 - Success
+            panel(
+              heading = "Success panel",
+              status = "success"
+            )#end panel 2
+          ), # end column 2
+          column(
+            width = 4,# tamano
+            # Panel 3 - Danger
+            panel(
+              heading = "Danger panel",
+              status = "danger"
+            )#end panel 3
+          ) #end column 3
+        ),# end fluidRow 1
+
+        tags$h3("progressBar from {shinyWidgets}"), # subtitulo
+        fluidRow(
+          column(
+            width = 4, # tamano
+            # Barras de progresos
+            # Barra 1
+            progressBar(
+              "pb1", value = 80, status = "primary", display_pct = TRUE
+            ) # end progressBar 1
+          ), # end column 1
+          column(
+            width = 4, # tamano
+            progressBar(
+              "pb2", value = 60, status = "success", display_pct = TRUE
+            ) # end progressBar 2
+          ), # end column 2
+          column(
+            width = 4,  # tamano
+            progressBar(
+              "pb3", value = 40, status = "danger", display_pct = TRUE
+            ) # end progressBar 3
+          ) # end column 3
+        ) # end fluidRow 2
+      ) # end mainPanel
+    ) # end sidebarLayout
+  ), # end tabPanel 1 - primera hoja / primera pestana
+  tabPanel(
+    title = "Second page"
+  ), # end tabPanel 2 - segunda hoja / segunda pestana
+  # Menu desplegable
+  navbarMenu(
+    title = "More",
+    tabPanel("Summary"), # sub pestana 1
+    "----",
+    "Section header",
+    tabPanel("Table") # sub pestana 2
+  ) # end navbarMenu - tercera hoja / tercera pestana
+
+) # end navbarPage
+
+shinyApp(ui, server)
+
+# Contenido modificado de https://github.com/dreamRs/fresh/blob/master/inst/examples/shiny-fluid/app.R
+```
+
+## Visualizar codigo en Cybord
+
+
+Visitar la pagina web de [Bootswatch](https://bootswatch.com/cyborg/) y [shiny](https://shiny.posit.co/r/articles/build/notifications/).
+
+
+## Referencias
+
+- [Grafica interactiva con plotly](https://plotly.com/ggplot2/animations/)
+
+- [Become a theming wizard with {bslib}](https://unleash-shiny.rinterface.com/beautify-with-bootstraplib)
+
+- [shinytheme](https://rstudio.github.io/shinythemes/)
+
+- [ggplot2 - themes](https://ggplot2-book.org/themes)
+
+- [R shiny Applications in Finance, Medicine Pharma and Education Industry](https://bookdown.org/loankimrobinson/rshinybook/)
+
+- [Mastering Shiny](https://mastering-shiny.org/index.html)
+
+- [Boostswatch](https://bootswatch.com/cyborg/)
+
+- [bslib - themes](https://shiny.posit.co/r/articles/build/themes/)
+
+- [R shint bslib](https://appsilon.com/r-shiny-bslib/)
+
+- [Interactive Data Analysis with Shiny](https://bookdown.org/paul/shiny_workshop/07-theming.html)
+
+- [fresh](https://dreamrs.github.io/fresh/reference/fresh.html)
+
+- [Beautify with {fresh}](https://unleash-shiny.rinterface.com/beautify-with-fresh)
+
+- [CSS for shiny](https://unleash-shiny.rinterface.com/beautify-css)
+
+- [CSS buttons](https://bootstrapdocs.com/v3.3.6/docs/css/#buttons)
+
+- [Using custom CSS in your app](https://shiny.posit.co/r/articles/build/css/)
+
+- [Outstanding User Interfaces with Shiny](https://github.com/DivadNojnarg/outstanding-shiny-ui)
+
+- [shiny - notifications](https://shiny.posit.co/r/articles/build/notifications/)
+
+- [Cyborg, visualizar codigos](https://bootswatch.com/cyborg/)
+
+- [R manuals:: An Introduction to R](https://rstudio.github.io/r-manuals/r-intro/Graphics.html#:~:text=The%20par()%20function%20is,for%20the%20current%20graphics%20device.&text=Without%20arguments%2C%20returns%20a%20list,values%20for%20the%20current%20device.&text=With%20a%20character%20vector%20argument,again%2C%20as%20a%20list.))
+
+- [emoji Github](https://gist.github.com/rxaviers/7360908)
