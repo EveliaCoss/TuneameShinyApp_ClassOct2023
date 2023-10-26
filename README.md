@@ -47,7 +47,7 @@ En este curso terminaremos con estos dos ejemplos de Shiny App generados con el 
 - Cero Desabasto https://cerodesabasto.org/open-data
 - Proyecto Global de Maices (CONABIO) https://conabio.shinyapps.io/conabio-pgmaices1/
   - Github: https://github.com/CONABIO/Conabio-PGMaices
--Mapa de crimenes en Mexico https://ddiannae.shinyapps.io/mapa-crimenes/
+- Mapa de crimenes en Mexico https://ddiannae.shinyapps.io/mapa-crimenes/
   - Github: https://github.com/ddiannae/mapa-crimenes/
 
 ## Ejemplos:
@@ -57,41 +57,22 @@ Visitar la pagina web de [Bootswatch](https://bootswatch.com/cyborg/) y [shiny](
 ## Referencias
 
 - [Grafica interactiva con plotly](https://plotly.com/ggplot2/animations/)
-
 - [Become a theming wizard with {bslib}](https://unleash-shiny.rinterface.com/beautify-with-bootstraplib)
-
 - [shinytheme](https://rstudio.github.io/shinythemes/)
-
 - [ggplot2 - themes](https://ggplot2-book.org/themes)
-
 - [R shiny Applications in Finance, Medicine Pharma and Education Industry](https://bookdown.org/loankimrobinson/rshinybook/)
-
 - [Mastering Shiny](https://mastering-shiny.org/index.html)
-
 - [Boostswatch](https://bootswatch.com/cyborg/)
-
 - [bslib - themes](https://shiny.posit.co/r/articles/build/themes/)
-
 - [R shint bslib](https://appsilon.com/r-shiny-bslib/)
-
 - [Interactive Data Analysis with Shiny](https://bookdown.org/paul/shiny_workshop/07-theming.html)
-
 - [fresh](https://dreamrs.github.io/fresh/reference/fresh.html)
-
 - [Beautify with {fresh}](https://unleash-shiny.rinterface.com/beautify-with-fresh)
-
 - [CSS for shiny](https://unleash-shiny.rinterface.com/beautify-css)
-
 - [CSS buttons](https://bootstrapdocs.com/v3.3.6/docs/css/#buttons)
-
 - [Using custom CSS in your app](https://shiny.posit.co/r/articles/build/css/)
-
 - [Outstanding User Interfaces with Shiny](https://github.com/DivadNojnarg/outstanding-shiny-ui)
-
 - [shiny - notifications](https://shiny.posit.co/r/articles/build/notifications/)
-
 - [Cyborg, visualizar codigos](https://bootswatch.com/cyborg/)
-
 - [R manuals:: An Introduction to R](https://rstudio.github.io/r-manuals/r-intro/Graphics.html#:~:text=The%20par()%20function%20is,for%20the%20current%20graphics%20device.&text=Without%20arguments%2C%20returns%20a%20list,values%20for%20the%20current%20device.&text=With%20a%20character%20vector%20argument,again%2C%20as%20a%20list.))
-
 - [emoji Github](https://gist.github.com/rxaviers/7360908)
