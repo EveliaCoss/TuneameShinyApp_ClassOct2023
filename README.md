@@ -42,6 +42,14 @@ En este curso terminaremos con estos dos ejemplos de Shiny App generados con el 
 
 [Github de fresh](https://github.com/dreamRs/fresh)
 
+## Ejemplos de Shiny app en el gobierno de Mexico
+
+- Cero Desabasto https://cerodesabasto.org/open-data
+- Proyecto Global de Maices (CONABIO) https://conabio.shinyapps.io/conabio-pgmaices1/
+  - Github: https://github.com/CONABIO/Conabio-PGMaices
+-Mapa de crimenes en Mexico https://ddiannae.shinyapps.io/mapa-crimenes/
+  - Github: https://github.com/ddiannae/mapa-crimenes/
+
 ## Ejemplos:
 
 Visitar la pagina web de [Bootswatch](https://bootswatch.com/cyborg/) y [shiny](https://shiny.posit.co/r/articles/build/notifications/).
