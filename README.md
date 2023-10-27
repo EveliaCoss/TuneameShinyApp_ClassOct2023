@@ -32,6 +32,8 @@ remotes::install_github("mitchelloharawild/icons")
 
 2) Descarga el archivo Shiny_EveliaCoss_clase.Rmd
 
+3) [Presentación](https://eveliacoss.github.io/TuneameShinyApp_ClassOct2023/TuneameShinyApp_slides.html#1)
+
 ## Shiny final de esta clase 💻
 
 En este curso terminaremos con estos dos ejemplos de Shiny App generados con el paquete  `fresh`:
